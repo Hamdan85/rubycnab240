@@ -20,7 +20,7 @@ class RubyCnab240::Retorno
       self.result << {
           line_num: segment_a[:line_num],
           identification: segment_a[:text][85..92],
-          succeded: RubyCnab240::Retorno.success?(segment_a[:text][230..23]),
+          succeded: RubyCnab240::Retorno.success?(segment_a[:text][230..231]),
           return_code: segment_a[:text][230..23],
           return_message: RubyCnab240::Retorno.return_message(segment_a[:text][230..231]),
           date: Date.strptime(segment_a[:text][93..101],"%d%m%Y")
