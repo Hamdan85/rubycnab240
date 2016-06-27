@@ -36,6 +36,9 @@ class RubyCnab240::Arquivo::Lote::Segment::A < RubyCnab240::Arquivo::Lote::Segme
   attr_reader :codigo_das_ocorrencias_para_retorno
 
   def initialize(fields = {})
+    agencia = fields[:agencia_mantenedora_da_conta_favorecida].to_s[0..4].rjust(5, '0') + fields[:digito_verificador_da_agencia].to_s[0..0].upcase.rjust(1, ' ')
+    conta   = fields[:numero_da_conta_corrente].to_s[0..11].rjust(12, '0') + fields[:digito_verificador_da_conta].to_s[0..0].upcase.rjust(1, ' ')
+
     @codigo_do_banco_na_compensacao = fields[:codigo_do_banco_na_compensacao].to_s[0..2].rjust(3, '0') #default: 001
     @lote_do_servico = fields[:lote_do_servico].to_s[0..3].rjust(4, '0')
     @tipo_de_registro = fields[:tipo_de_registro].to_s[0..0].rjust(1, '0')
@@ -45,10 +48,10 @@ class RubyCnab240::Arquivo::Lote::Segment::A < RubyCnab240::Arquivo::Lote::Segme
     @codigo_da_instrucao_para_movimento = fields[:codigo_da_instrucao_para_movimento] = '00' #“00” para inclusão de pagamento ou “99” para exclusão.
     @codigo_da_camara_centralizadora = fields[:codigo_da_camara_centralizadora].to_s[0..2].rjust(3, '0') #Quando de lançamento no Header do Lote for igual a: '03' (DOC/TED) este campo deverá ser preenchido com '700' para DOC (valor até R$ 4.999,99) ou preencher com '018' para TED (valor igual ou acima de 5 mil reais). Quando a forma de lançamento no Header do Lote for igual a: '41' (TED Outra Titularidade) ou '43'  (TED Mesma Titularidade), este campo deverá ser preenchido com '018'. Para crédito no Banco do Brasil informar “000” (zeros).
     @codigo_do_banco_favorecido = fields[:codigo_do_banco_favorecido].to_s[0..2].rjust(3, '0')
-    @agencia_mantenedora_da_conta_favorecida = fields[:agencia_mantenedora_da_conta_favorecida].to_s[0..4].rjust(5, '0')
-    @digito_verificador_da_agencia = fields[:digito_verificador_da_agencia].to_s[0..0].upcase.rjust(1, '0')
-    @numero_da_conta_corrente = fields[:numero_da_conta_corrente].to_s[0..11].rjust(12, '0')
-    @digito_verificador_da_conta = fields[:digito_verificador_da_conta].to_s[0..0].upcase.rjust(1, '0')
+    @agencia_mantenedora_da_conta_favorecida = agencia[0..-2]
+    @digito_verificador_da_agencia = agencia[-1]
+    @numero_da_conta_corrente = conta[0..-2]
+    @digito_verificador_da_conta = conta[-1]
     @digito_verificador_da_agencia_e_conta = fields[:digito_verificador_da_agencia_e_conta].to_s[0..0].upcase.rjust(1, ' ') #As contas do Banco do Brasil não possuem o segundo dígito, nesse caso informar 'branco' (espaço). Para favorecidos de outros bancos que possuem contas com dois dígitos verificadores (DV), preencher este campo com o segundo dígito verificador.
     @nome_do_favorecido = fields[:nome_do_favorecido].to_s[0..29].upcase.ljust(30, ' ')
     @verificacao_retorno = '0' * 11
