@@ -228,7 +228,7 @@ class RubyCnab240::Retorno
         false
       when 'BD'
         #'CONFIRMACAO DE PAGAMENTO AGENDADO'
-        false
+        true
       when 'CF'
         #'VALOR DO DOCUMENTO INVALIDO'
         false
